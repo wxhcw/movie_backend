@@ -30,13 +30,19 @@ app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api/] })
 // 导入并注册用户路由模块
 const userRouter = require('./router/user')
 app.use('/api', userRouter)
+// 导入并使用用户信息路由模块
+const userinfoRouter = require('./router/userinfo')
+app.use('/my', userinfoRouter)// 注意：不以 /api 开头的接口，都需要进行 Token 身份认证
+// 导入并使用文章分类路由模块
+const movieRouter = require('./router/movie')
+app.use('/movie', movieRouter)
 
 // 定义错误级别的中间件
 app.use(function (err, req, res, next) {
   // 验证失败导致的错误
   if (err instanceof joi.ValidationError) return res.cc(err)
   // 身份认证失败后的错误
-  // if (err.name === 'UnauthorizedError') return res.cc('身份认证失败！')
+  if (err.name === 'UnauthorizedError') return res.cc('身份认证失败！')
   // 未知错误
   res.cc(err)
 })
