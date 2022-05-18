@@ -40,7 +40,6 @@ exports.getMovSoon = (req, res) => {
 }
 // 根据ID获取某部电影的详细信息(放映时长、导演)
 exports.getMovieDetail = (req, res) => {
-    // 接收表单数据
     const sql = `select * from mov_detail where movie_id = '${req.params.movieId}'`
     db.query(sql, (err, results) => {
         if (err) return res.cc(err)
@@ -53,8 +52,7 @@ exports.getMovieDetail = (req, res) => {
 }
 // 根据ID获取某部电影的基本信息(评分、类型、海报)
 exports.getMovieInfo = (req, res) => {
-    // 接收表单数据
-    const sql = `select * from movie where movie_id = '${req.params.movId}'`
+    const sql = `select * from movie where movie_id = '${req.params.movieId}'`
     db.query(sql, (err, results) => {
         if (err) return res.cc(err)
         res.send({
@@ -125,7 +123,6 @@ exports.getHallMovie = (req, res) => {
 }
 // 根据movieID获取这部电影的排片信息
 exports.getMovSchedule = (req, res) => {
-    // 接收表单数据
     const sql = `select * from mov_schedule where movie_id = '${req.params.movieId}'`
     db.query(sql, (err, results) => {
         if (err) return res.cc(err)
@@ -137,16 +134,29 @@ exports.getMovSchedule = (req, res) => {
     })
 }
 
-// 更新某部电影是否收藏
+// 更新某场次是否收藏
 exports.updateCollect = (req, res) => {
     let { isCollect, movieId } = req.body
-    // 接收表单数据
-    const sql = `update movie set movie_isCollect=${isCollect} where movie_id='${movieId}'`
+    const sql = `update mov_schedule set schedule_isCollect=${isCollect} where movie_id='${movieId}'`
     db.query(sql, (err, results) => {
         if (err) return res.cc(err)
         res.send({
             status: 0,
-            message: isCollect === 1 ? '收藏成功！' : '取消收藏成功',
+            message: isCollect ? '收藏场次成功！' : '取消收藏成功',
+        })
+    })
+}
+// 查看收藏的场次信息
+exports.getCollectSchedule = (req, res) => {
+    const sql = `SELECT * from mov_schedule 
+                    LEFT JOIN movie USING (movie_id) 
+                    where schedule_isCollect=1`
+    db.query(sql, (err, results) => {
+        if (err) return res.cc(err)
+        res.send({
+            status: 0,
+            message: '获取收藏的场次信息成功',
+            data: results,
         })
     })
 }
