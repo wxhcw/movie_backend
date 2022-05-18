@@ -37,6 +37,7 @@ exports.reg_login_schema = {
     username,
     password,
     confirmPwd,
+    customer_id
   },
 }
 
@@ -62,12 +63,6 @@ exports.update_password_schema = {
     // 3. .concat() 用于合并 joi.not(joi.ref('oldPwd')) 和 password 这两条验证规则
     newPwd: joi.not(joi.ref('oldPwd')).concat(password),
   }
-}
-// 验证规则对象 - 更新头像
-exports.update_avatar_schema = {
-  body: {
-    avatar,
-  },
 }
 
 

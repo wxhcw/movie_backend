@@ -138,8 +138,15 @@ exports.getMovSchedule = (req, res) => {
 }
 
 // 更新某部电影是否收藏
-// exports.updateCollect = (req, res) => {
-//     // 接收表单数据
-//     const sql = `update user set collect=? where name=?`
-
-// }
+exports.updateCollect = (req, res) => {
+    let { isCollect, movieId } = req.body
+    // 接收表单数据
+    const sql = `update movie set movie_isCollect=${isCollect} where movie_id='${movieId}'`
+    db.query(sql, (err, results) => {
+        if (err) return res.cc(err)
+        res.send({
+            status: 0,
+            message: isCollect === 1 ? '收藏成功！' : '取消收藏成功',
+        })
+    })
+}

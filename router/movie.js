@@ -21,8 +21,7 @@ router.get('/schedule/:movieId', movieHandler.getMovSchedule)
 router.post('/schedule', movieHandler.getHallSchedule)
 // 获取全部的影院电影信息
 router.post('/info', movieHandler.getHallMovie)
-
-// 更新某部电影是否收藏
-// router.post('/isCollect', movieHandler.updateCollect)
+// 更新某部电影是否想看
+router.post('/isCollect', movieHandler.updateCollect)
 
 module.exports = router

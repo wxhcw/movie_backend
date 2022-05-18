@@ -7,7 +7,7 @@ const config = require('../config')
 
 // 注册用户的处理函数
 exports.regUser = (req, res) => {
-    let { username, password, confirmPwd } = req.body
+    let { customer_id, username, password, confirmPwd } = req.body
     const sql = `select * from user where username ='${username}'`
     db.query(sql, function (err, results) {
         // 执行 SQL 语句失败
@@ -24,9 +24,8 @@ exports.regUser = (req, res) => {
         // 对用户的密码,进行 bcrype 加密，返回值是加密之后的密码字符串
         password = bcrypt.hashSync(password, 10)
 
-        const uuid = require('node-uuid');
         const sqlInsert = 'insert into user set ?'
-        db.query(sqlInsert, { customer_id: uuid.v1(), username, password }, function (err, results) {
+        db.query(sqlInsert, { customer_id, username, password }, function (err, results) {
             // 执行 SQL 语句失败
             if (err) return res.cc(err)
             // SQL 语句执行成功，但影响行数不为 1
