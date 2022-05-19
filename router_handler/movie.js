@@ -136,8 +136,8 @@ exports.getMovSchedule = (req, res) => {
 
 // 更新某场次是否收藏
 exports.updateCollect = (req, res) => {
-    let { isCollect, movieId } = req.body
-    const sql = `update mov_schedule set schedule_isCollect=${isCollect} where movie_id='${movieId}'`
+    let { isCollect, scheduleId } = req.body
+    const sql = `update mov_schedule set schedule_isCollect=${isCollect} where schedule_id='${scheduleId}'`
     db.query(sql, (err, results) => {
         if (err) return res.cc(err)
         res.send({
