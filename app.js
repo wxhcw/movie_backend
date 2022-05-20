@@ -33,9 +33,12 @@ app.use('/api', userRouter)
 // 导入并使用用户信息路由模块
 const userinfoRouter = require('./router/userinfo')
 app.use('/my', userinfoRouter)// 注意：不以 /api 开头的接口，都需要进行 Token 身份认证
-// 导入并使用文章分类路由模块
+// 导入并使用电影信息路由模块
 const movieRouter = require('./router/movie')
 app.use('/movie', movieRouter)
+// 导入并使用管理员信息路由模块
+const adminRouter = require('./router/admin')
+app.use('/admin', adminRouter)
 
 // 定义错误级别的中间件
 app.use(function (err, req, res, next) {

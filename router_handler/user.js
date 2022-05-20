@@ -60,6 +60,7 @@ exports.login = (req, res) => {
         const tokenStr = jwt.sign(user, config.jwtSecretKey, {
             expiresIn: '24h', // token 有效期为 10 个小时
         })
+        console.log('tokenStr',tokenStr);
         res.send({
             status: 0,
             role: results[0].isAdmin,

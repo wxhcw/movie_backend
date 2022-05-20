@@ -95,9 +95,10 @@ exports.getHallSchedule = (req, res) => {
 }
 // 获取影院的全部电影信息
 exports.getHallMovie = (req, res) => {
-    let { queryName, currentPage, pageSize } = req.body //获取分页信息
+    let { queryName, queryType,currentPage, pageSize } = req.body //获取分页信息
     const sqlTotal = `select count(*) total from movie
-        where movie_name like '%${queryName}%'`
+        where movie_name like '%${queryName}%'
+        and movie_type like '%${queryType}%'`
     db.query(sqlTotal, (err, results) => {
         if (err) return res.cc(err)
         let data = {
@@ -108,6 +109,7 @@ exports.getHallMovie = (req, res) => {
 
         const sql = `select * from movie
                     where movie_name like '%${queryName}%'
+                    and movie_type like '%${queryType}%'
                     limit ${(currentPage - 1) * pageSize},${pageSize}`
 
         db.query(sql, (err, results) => {
