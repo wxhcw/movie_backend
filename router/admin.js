@@ -10,4 +10,8 @@ router.post('/updateMovInfo', adminHandler.updateMovInfo)
 router.get('/delMovInfo/:movieId', adminHandler.delMovInfo)
 // 添加电影基本信息
 router.post('/insertMovInfo', adminHandler.insertMovInfo)
+// 获取全部订单信息
+router.post('/orderInfo', adminHandler.getAllOrderInfo)
+// 获取全部用户信息
+router.post('/userInfo', adminHandler.getAllUserInfo)
 module.exports = router

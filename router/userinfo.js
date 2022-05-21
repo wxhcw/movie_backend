@@ -15,5 +15,10 @@ router.get('/userinfo', userinfo_handler.getUserInfo)
 router.post('/userinfo', expressJoi(update_userinfo_schema), userinfo_handler.updateUserInfo)
 // 重置密码的路由
 router.post('/updatepwd', expressJoi(update_password_schema), userinfo_handler.updatePassword)
-
+// 购买电影票生成订单（新增订单信息）
+router.post('/insertOrder', userinfo_handler.insertOrder)
+// 根据用户ID获取订单信息
+router.post('/orderInfo/:customerId', userinfo_handler.getOrderInfo)
+// 根据ID删除订单信息
+router.get('/delOrderInfo/:orderId', userinfo_handler.delOrderInfo)
 module.exports = router

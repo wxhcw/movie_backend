@@ -26,7 +26,7 @@ exports.getUserInfo = (req, res) => {
     })
 }
 
-// 更新用户基本信息的处理函数
+// 更新用户基本信息的处理函数 post update
 exports.updateUserInfo = (req, res) => {
     const sql = `update user set ? where customer_id=?`
     db.query(sql, [req.body, req.body.customer_id], (err, results) => {
@@ -41,7 +41,7 @@ exports.updateUserInfo = (req, res) => {
     })
 }
 
-// 重置密码的处理函数
+// 重置密码的处理函数 post update
 exports.updatePassword = (req, res) => {
     // 定义根据 customer_id 查询用户数据的 SQL 语句
     const sql = `select * from user where customer_id=?`
@@ -68,4 +68,61 @@ exports.updatePassword = (req, res) => {
 
     })
 
+}
+
+// 购买电影票生成订单（新增订单信息） post insert
+exports.insertOrder = (req, res) => {
+    const sqlInsert = 'insert into user_orders set ?'
+    db.query(sqlInsert, req.body, (err, results) => {
+        if (err) return res.cc(err)
+        if (results.affectedRows !== 1) return res.cc('购票失败！')
+        return res.cc('购票成功！', 0)
+    })
+}
+// 根据用户ID获取订单信息 post
+exports.getOrderInfo = (req, res) => {
+    let { queryName, queryHall, currentPage, pageSize } = req.body //获取分页信息
+    const sqlTotal = `SELECT count(*) total
+                FROM user_orders LEFT JOIN movie USING ( movie_id )
+	            LEFT JOIN mov_schedule USING ( schedule_id ) 
+                WHERE customer_id = '${req.params.customerId}'
+                and movie_name like '%${queryName}%'
+                and schedule_hall like '%${queryHall}%'`
+
+    db.query(sqlTotal, (err, results) => {
+        // 执行 SQL 语句失败
+        if (err) return res.cc(err)
+        let data = {
+            totalCount: 0,
+            results: []
+        }
+        data.totalCount = results[0].total  //订单总数
+        const sql = `SELECT order_id, movie_name, count, total_price, order_time, schedule_hall, movie_time, movie_poster
+                    FROM user_orders LEFT JOIN movie USING ( movie_id )
+                    LEFT JOIN mov_schedule USING ( schedule_id )
+                    WHERE customer_id = '${req.params.customerId}'
+                    and movie_name like '%${queryName}%'
+                    and schedule_hall like '%${queryHall}%'
+                    limit ${(currentPage - 1) * pageSize},${pageSize}`
+        db.query(sql, (err, results) => {
+            if (err) return res.cc(err)
+            data.results = results  //获取电影信息
+            res.send({
+                status: 0,
+                message: '获取订单信息成功！',
+                data,
+            })
+        })
+    })
+}
+// 根据ID删除订单信息
+exports.delOrderInfo = (req, res) => {
+    const sql = `DELETE FROM user_orders WHERE order_id = '${req.params.orderId}'`
+    db.query(sql, (err, results) => {
+        // 执行 SQL 语句失败
+        if (err) return res.cc(err)
+        if (results.affectedRows !== 1) return res.cc('删除订单信息失败')
+        // 修改用户信息成功
+        return res.cc('删除订单信息成功！', 0)
+    })
 }

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 // 导入配置文件
 const config = require('../config')
 
-// 注册用户的处理函数
+// 注册用户的处理函数 post insert
 exports.regUser = (req, res) => {
     let { customer_id, username, password, confirmPwd } = req.body
     const sql = `select * from user where username ='${username}'`
@@ -60,7 +60,6 @@ exports.login = (req, res) => {
         const tokenStr = jwt.sign(user, config.jwtSecretKey, {
             expiresIn: '24h', // token 有效期为 10 个小时
         })
-        console.log('tokenStr',tokenStr);
         res.send({
             status: 0,
             role: results[0].isAdmin,

@@ -64,11 +64,19 @@ exports.getMovieInfo = (req, res) => {
 }
 // 获取全部的排片信息
 exports.getHallSchedule = (req, res) => {
-    let { queryName, currentPage, pageSize } = req.body //获取分页信息
+    let { queryName, queryHall, queryDate, currentPage, pageSize } = req.body //获取分页信息
+    let date = new Array(2)
+    if (!queryDate.length) {
+        date[0] = '2015-05-23 00:00'
+        date[1] = '2025-05-23 00:00'
+    } else {
+        date = queryDate
+    }
     const sqlTotal = `SELECT count(*) total from mov_schedule 
                         LEFT JOIN movie USING (movie_id) 
-                        where movie_name LIKE '%${queryName}%'`
-
+                        where movie_name LIKE '%${queryName}%'
+                        and schedule_hall LIKE '%${queryHall}%'
+                        and movie_time between '${date[0]}' and '${date[1]}'`
     db.query(sqlTotal, (err, results) => {
         if (err) return res.cc(err)
         let data = {
@@ -80,6 +88,8 @@ exports.getHallSchedule = (req, res) => {
         const sql = `SELECT * from mov_schedule 
                         LEFT JOIN movie USING (movie_id) 
                         where movie_name LIKE '%${queryName}%' 
+                        and schedule_hall LIKE '%${queryHall}%' 
+                        and movie_time between '${date[0]}' and '${date[1]}'
                         limit ${(currentPage - 1) * pageSize},${pageSize}`
 
         db.query(sql, (err, results) => {
@@ -95,7 +105,7 @@ exports.getHallSchedule = (req, res) => {
 }
 // 获取影院的全部电影信息
 exports.getHallMovie = (req, res) => {
-    let { queryName, queryType,currentPage, pageSize } = req.body //获取分页信息
+    let { queryName, queryType, currentPage, pageSize } = req.body //获取分页信息
     const sqlTotal = `select count(*) total from movie
         where movie_name like '%${queryName}%'
         and movie_type like '%${queryType}%'`
